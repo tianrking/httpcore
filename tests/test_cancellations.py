@@ -110,7 +110,7 @@ async def test_connection_pool_removes_connection_after_request_cancellation(
             await super().wait_for_connection(timeout)
             request_assigned.set()
             await anyio.sleep_forever()
-            raise AssertionError("Pool request must be cancelled")
+            raise AssertionError("Pool request must be cancelled")  # pragma: nocover
 
     monkeypatch.setattr(connection_pool, "AsyncPoolRequest", WaitingPoolRequest)
 
@@ -121,16 +121,18 @@ async def test_connection_pool_removes_connection_after_request_cancellation(
         async def handle_async_request(
             self, request: httpcore.Request
         ) -> httpcore.Response:
-            raise AssertionError("Cancelled request must not reach the connection")
+            raise AssertionError(  # pragma: nocover
+                "Cancelled request must not reach the connection"
+            )
 
         async def aclose(self) -> None:
             self.closed = True
 
         def can_handle_request(self, origin: httpcore.Origin) -> bool:
-            return True
+            return True  # pragma: nocover
 
         def is_available(self) -> bool:
-            return False
+            return False  # pragma: nocover
 
         def has_expired(self) -> bool:
             return False
@@ -142,7 +144,7 @@ async def test_connection_pool_removes_connection_after_request_cancellation(
             return False
 
         def info(self) -> str:
-            return "CONNECTING"
+            return "CONNECTING"  # pragma: nocover
 
     class TestPool(httpcore.AsyncConnectionPool):
         def create_connection(
