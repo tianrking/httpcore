@@ -105,7 +105,7 @@ async def test_connection_pool_removes_connection_after_request_cancellation(
 
     class WaitingPoolRequest(connection_pool.AsyncPoolRequest):
         async def wait_for_connection(
-            self, timeout: float | None = None
+            self, timeout: typing.Optional[float] = None
         ) -> AsyncConnectionInterface:
             await super().wait_for_connection(timeout)
             request_assigned.set()
